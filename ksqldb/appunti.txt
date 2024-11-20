@@ -1,0 +1,57 @@
+-- Capture Data
+
+CREATE SOURCE CONNECTOR `stockapp.trades` WITH (
+    'connector.class' = 'io.confluent.kafka.connect.datagen.DatagenConnector',
+    'kafka.topic' = 'ksqldb.stockapp.trades',
+    'quickstart' = 'Stock_Trades',
+    'max.interval' = 3000,
+    'iterations' = 1000,
+    'tasks.max' = '1'
+);
+
+CREATE SOURCE CONNECTOR `stockapp.users` WITH (
+    'connector.class' = 'io.confluent.kafka.connect.datagen.DatagenConnector',
+    'kafka.topic' = 'ksqldb.stockapp.users',
+    'quickstart' = 'Users_',
+    'max.interval' = 3000,
+    'iterations' = 1000,
+    'tasks.max' = '1'
+);
+
+CREATE TABLE stockapp_users (
+    userid STRING PRIMARY KEY,
+    registertime BIGINT,
+    regionid STRING,
+    gender STRING,
+    interests ARRAY<STRING>,
+    contactinfo MAP<STRING, STRING>
+) WITH (
+    KAFKA_TOPIC = 'ksqldb.stockapp.users',
+    VALUE_FORMAT = 'AVRO'
+);
+
+CREATE STREAM stockapp_trades
+WITH (
+    KAFKA_TOPIC = 'ksqldb.stockapp.trades',
+    VALUE_FORMAT = 'AVRO'
+);
+
+-- Perform Continuous Transformations
+
+CREATE STREAM stockapp_trades_transformed AS
+    SELECT
+        CAST(price AS DECIMAL(7,2)) * quantity / 100 AS dollar_amount,
+        MASK(account, '*', '*', NULL, NULL) AS account_masked,
+        symbol,
+        userid
+    FROM stockapp_trades
+    WHERE symbol LIKE '%T'
+    EMIT CHANGES;
+
+CREATE STREAM stockapp_trades_transformed_enriched AS
+    SELECT s.userid, s.dollar_amount, s.symbol,
+           u.regionid, u.interests, u.contactinfo
+    FROM stockapp_trades_transformed s
+    LEFT JOIN stockapp_users u
+        ON s.userid = u.userid
+    EMIT CHANGES;

@@ -1,0 +1,118 @@
+{
+  "type": "record",
+  "name": "ChangeEvent",
+  "namespace": "com.sfdccdc.avro",
+  "fields": [
+    {
+      "name": "Id",
+      "type": "string"
+    },
+    {
+      "name": "ReplayId",
+      "type": "string"
+    },
+    {
+      "name": "ChangeEventHeader",
+      "type": {
+        "type": "record",
+        "name": "ChangeEventHeader",
+        "fields": [
+          {
+            "name": "entityName",
+            "type": "string"
+          },
+          {
+            "name": "recordIds",
+            "type": {
+              "type": "array",
+              "items": "string"
+            }
+          },
+          {
+            "name": "changeType",
+            "type": "string"
+          },
+          {
+            "name": "changedFields",
+            "type": {
+              "type": "array",
+              "items": "string"
+            }
+          },
+          {
+            "name": "changeOrigin",
+            "type": "string"
+          },
+          {
+            "name": "transactionKey",
+            "type": "string"
+          },
+          {
+            "name": "sequenceNumber",
+            "type": "int"
+          },
+          {
+            "name": "commitTimestamp",
+            "type": "long"
+          },
+          {
+            "name": "commitUser",
+            "type": "string"
+          },
+          {
+            "name": "commitNumber",
+            "type": "long"
+          }
+        ],
+        "avro.java.generateBuilder": true
+      }
+    },
+    {
+      "name": "Name",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "CreatedDate",
+      "type": ["null", "long"],
+      "default": null
+    },
+    {
+      "name": "CreatedById",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "LastModifiedDate",
+      "type": "long"
+    },
+    {
+      "name": "LastModifiedById",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "Contact_to_Service_Account__c",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "Communication_Channel__c",
+      "type": "string"
+    },
+    {
+      "name": "Preference_Type__c",
+      "type": ["null", "string"],
+      "default": null
+    },
+    {
+      "name": "_ObjectType",
+      "type": "string"
+    },
+    {
+      "name": "_EventType",
+      "type": "string"
+    }
+  ],
+  "avro.java.generateBuilder": true
+}

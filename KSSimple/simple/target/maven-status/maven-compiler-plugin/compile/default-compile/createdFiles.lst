@@ -1,0 +1,5 @@
+com/sfdccdc/avro/ChangeEvent$Builder.class
+com/sfdccdc/avro/ChangeEvent.class
+com/simple/KafkaStreamsApp.class
+com/sfdccdc/avro/ChangeEventHeader$Builder.class
+com/sfdccdc/avro/ChangeEventHeader.class
