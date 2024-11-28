@@ -25,14 +25,14 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-streams</artifactId>
-            <version>3.7.0</version>
+            <version>3.7.1</version>
         </dependency>
 
         <!-- Kafka client for producers/consumers -->
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.7.0</version>
+            <version>3.7.1</version>
         </dependency>
 
         <!-- SLF4J for logging -->
@@ -91,6 +91,39 @@
             <artifactId>avro-maven-plugin</artifactId>
             <version>1.11.2</version>
         </dependency>
+
+
+        <!-- TESTS-->
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-streams-test-utils</artifactId>
+            <version>3.7.1</version> <!-- Usa la versione di Kafka che stai utilizzando -->
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.7.0</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- TESTS-->
+
+
 
     </dependencies>
 
