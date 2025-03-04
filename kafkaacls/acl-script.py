@@ -39,17 +39,22 @@ for acl in config.get("kafka-acls", []):
         result = subprocess.run(check_cmd, capture_output=True, text=True)
 
         acl_exists = False
+        current_resource = None
+
         for line in result.stdout.splitlines():
-            if (f"operation={operation}" in line and 
-                f"principal={principal}" in line and 
-                f"resourceType=TRANSACTIONAL_ID" in line and 
-                f"name={transactional_id}" in line):
+            line = line.strip()
+            
+            if "Current ACLs for resource" in line:
+                parts = line.split("name=")
+                if len(parts) > 1:
+                    current_resource = parts[1].split(",")[0].strip("`") 
+            
+            if principal in line and operation in line and current_resource == transactional_id:
                 acl_exists = True
-                break  # If find ACL go out from the loop
+                break  
+
         if acl_exists:
             print(f"ACL for {operation} on {transactional_id} already exists. Skipping.")            
-        # if operation in result.stdout:
-        #     print(f"ACL for {operation} on {transactional_id} already exists. Skipping.")
         else:
             print(f"Creating ACL for {operation} on {transactional_id}.")
             create_cmd = [
