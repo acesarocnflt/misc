@@ -13,9 +13,9 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
-            cp /scripts/acl-script.sh /tmp/acl-script.sh &&
-            chmod +x /tmp/acl-script.sh &&
-            /tmp/acl-script.sh
+            cp /scripts/acl-script.py /tmp/acl-script.py &&
+            chmod +x /tmp/acl-script.py &&
+            /tmp/acl-script.py
         volumeMounts:
         - name: script-volume
           mountPath: /scripts
@@ -35,35 +35,59 @@ metadata:
   name: kafka-acls-script
   namespace: confluent
 data:
-  acl-script.sh: |
-    #!/bin/bash
-    set -e
+  acl-script.py: |
+    import yaml
+    import subprocess
+    import os
 
-    # Set KafkaBroker value if not set
-    KAFKA_BROKER=${KAFKA_BROKER:-"kafka.confluent.svc.cluster.local:9092"}
-    CONFIG_FILE="/config/acl-config.yaml"
+    # Get Kafka broker from environment variable or default
+    KAFKA_BROKER = os.getenv("KAFKA_BROKER", "kafka.confluent.svc.cluster.local:9092")
 
-    get_yaml_value() {
-        local key=$1
-        grep "^\s*$key:" "$CONFIG_FILE" | awk -F ': ' '{print $2}'
-    }
+    if not KAFKA_BROKER:
+        print("Error: KAFKA_BROKER environment variable is not set.")
+        exit(1)
 
-    action=$(get_yaml_value "kafka-acls.action")
-    principal=$(get_yaml_value "kafka-acls.allow-principal")
-    transactional_id=$(get_yaml_value "kafka-acls.transactional-id")
-    resource_pattern_type=$(get_yaml_value "kafka-acls.resource-pattern-type")
-    operations=($(grep "^\s*-" "$CONFIG_FILE" | awk '{print $2}'))
+    print(f"Using Kafka broker: {KAFKA_BROKER}")
 
-    for operation in "${operations[@]}"; do
-        if kafka-acls.sh --bootstrap-server <KAFKA_BROKER> --list --transactional-id "$transactional_id" | grep -q "$operation"; then
-            echo "ACL for $operation on $transactional_id already exists. Skipping."
-        else
-            echo "Creating ACL for $operation on $transactional_id."
-            kafka-acls.sh --bootstrap-server <KAFKA_BROKER> "$action" --allow-principal "$principal" \
-                --operation "$operation" --transactional-id "$transactional_id" \
-                --resource-pattern-type "$resource_pattern_type"
-        fi
-    done
+    # Path to the YAML file containing ACL configuration
+    CONFIG_FILE = "/config/acl-config.yaml"
+
+    if not os.path.isfile(CONFIG_FILE):
+        print(f"Error: Configuration file {CONFIG_FILE} not found.")
+        exit(1)
+
+    # Load YAML file
+    with open(CONFIG_FILE, "r") as file:
+        config = yaml.safe_load(file)
+
+    # Process each ACL entry
+    for acl in config.get("kafka-acls", []):
+        action = acl.get("action")
+        principal = acl.get("allow-principal")
+        transactional_id = acl.get("transactional-id")
+        resource_pattern_type = acl.get("resource-pattern-type")
+        operations = acl.get("operations", [])
+
+        for operation in operations:
+            # Check if ACL already exists
+            check_cmd = [
+                "kafka-acls.sh", "--bootstrap-server", KAFKA_BROKER,
+                "--list", "--transactional-id", transactional_id
+            ]
+            result = subprocess.run(check_cmd, capture_output=True, text=True)
+
+            if operation in result.stdout:
+                print(f"ACL for {operation} on {transactional_id} already exists. Skipping.")
+            else:
+                print(f"Creating ACL for {operation} on {transactional_id}.")
+                create_cmd = [
+                    "kafka-acls.sh", "--bootstrap-server", KAFKA_BROKER,
+                    action, "--allow-principal", principal,
+                    "--operation", operation,
+                    "--transactional-id", transactional_id,
+                    "--resource-pattern-type", resource_pattern_type
+                ]
+                subprocess.run(create_cmd)
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -73,10 +97,18 @@ metadata:
 data:
   acl-config.yaml: |
     kafka-acls:
-      action: "--add"
-      allow-principal: "User:team1"
-      operations:
-        - "WRITE"
-        - "DESCRIBE"
-      transactional-id: "team1-streams-app1"
-      resource-pattern-type: "prefixed"
+      - action: "--add"
+        allow-principal: "User:team1"
+        operations:
+          - "WRITE"
+          - "DESCRIBE"
+        transactional-id: "team1-streams-app1"
+        resource-pattern-type: "prefixed"
+
+      - action: "--add"
+        allow-principal: "User:team2"
+        operations:
+          - "READ"
+          - "DESCRIBE"
+        transactional-id: "team2-streams-app2"
+        resource-pattern-type: "literal"
