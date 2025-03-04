@@ -42,12 +42,11 @@ data:
     import os
 
     # Get Kafka broker from environment variable or default
+    # Exit with code 1 if not set and print its variable
     KAFKA_BROKER = os.getenv("KAFKA_BROKER", "kafka.confluent.svc.cluster.local:9092")
-
     if not KAFKA_BROKER:
         print("Error: KAFKA_BROKER environment variable is not set.")
         exit(1)
-
     print(f"Using Kafka broker: {KAFKA_BROKER}")
 
     # Path to the YAML file containing the ACL configuration
