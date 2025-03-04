@@ -38,6 +38,8 @@ data:
   acl-script.sh: |
     #!/bin/bash
     set -e
+
+    KAFKA_BROKER=${KAFKA_BROKER:-"kafka.confluent.svc.cluster.local:9092"}
     CONFIG_FILE="/config/acl-config.yaml"
 
     get_yaml_value() {
