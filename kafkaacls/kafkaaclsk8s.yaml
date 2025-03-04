@@ -36,6 +36,7 @@ metadata:
   namespace: confluent
 data:
   acl-script.py: |
+    #!/usr/bin/env python3
     import yaml
     import subprocess
     import os
