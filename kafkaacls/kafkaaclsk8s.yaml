@@ -13,14 +13,14 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
-            chmod +x /tmp/scripts/acl-script.sh &&
-            /tmp/scripts/acl-script.sh
+            chmod +x /scripts/acl-script.sh &&
+            /scripts/acl-script.sh
         volumeMounts:
         - name: script-volume
-          mountPath: /tmp/scripts
+          mountPath: /scripts
           readOnly: false 
         - name: config-volume
-          mountPath: /tmp/config
+          mountPath: /config
           readOnly: false
       volumes:
       - name: script-volume
@@ -39,7 +39,7 @@ data:
   acl-script.sh: |
     #!/bin/bash
     set -e
-    CONFIG_FILE="/tmp/config/acl-config.yaml"
+    CONFIG_FILE="/config/acl-config.yaml"
 
     get_yaml_value() {
         local key=$1
