@@ -15,7 +15,7 @@ spec:
           - |
             cp /scripts/acl-script.sh /tmp/acl-script.sh &&
             chmod +x /tmp/acl-script.sh &&
-            /scripts/acl-script.sh
+            /tmp/acl-script.sh
         volumeMounts:
         - name: script-volume
           mountPath: /scripts
