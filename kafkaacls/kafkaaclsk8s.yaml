@@ -13,7 +13,7 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
-            # apt update && apt install -y jq &&
+            chmod +x /scripts/acl-script.sh &&
             /scripts/acl-script.sh
         volumeMounts:
         - name: script-volume
