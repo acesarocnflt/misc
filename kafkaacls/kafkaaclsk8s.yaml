@@ -113,3 +113,7 @@ data:
           - "DESCRIBE"
         transactional-id: "team2-streams-app2"
         resource-pattern-type: "literal"
+
+
+
+
