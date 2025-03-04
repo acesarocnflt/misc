@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: kafka-acls
-        image: confluentinc/cp-kafka:latest
+        image: confluentinc/cp-kafka:7.8.0
         command: ["/bin/bash", "-c"]
         args:
           - |
@@ -20,12 +20,19 @@ spec:
         volumeMounts:
         - name: script-volume
           mountPath: /scripts
+          readOnly: true  # Per sicurezza, i ConfigMap sono in sola lettura
+        - name: config-volume
+          mountPath: /config
+          readOnly: true
         - name: tmp-volume
           mountPath: /tmp
       volumes:
       - name: script-volume
         configMap:
-          name: kafka-acls-script
+          name: kafka-acls-script  # Contiene lo script Bash
+      - name: config-volume
+        configMap:
+          name: kafka-acls-config  # Contiene acl-config.yaml
       - name: tmp-volume
         emptyDir: {}
 ---
