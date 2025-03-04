@@ -57,3 +57,19 @@ data:
                 --resource-pattern-type "$resource_pattern_type"
         fi
     done
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kafka-acls-config
+  namespace: kafka
+data:
+  acl-config.yaml: |
+    kafka-acls:
+      action: "--add"
+      allow-principal: "User:team1"
+      operations:
+        - "WRITE"
+        - "DESCRIBE"
+      transactional-id: "team1-streams-app1"
+      resource-pattern-type: "prefixed"
