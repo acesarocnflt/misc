@@ -15,6 +15,7 @@ spec:
           - |
             cp /scripts/acl-script.sh /tmp/acl-script.sh &&
             chmod +x /tmp/acl-script.sh &&
+            cp /scripts/acl-config.yaml /tmp/acl-config.yaml &&
             /tmp/acl-script.sh
         volumeMounts:
         - name: script-volume
@@ -33,7 +34,7 @@ data:
   acl-script.sh: |
     #!/bin/bash
     set -e
-    CONFIG_FILE="acl-config.yaml"
+    CONFIG_FILE="/tmp/acl-config.yaml"
 
     get_yaml_value() {
         local key=$1
