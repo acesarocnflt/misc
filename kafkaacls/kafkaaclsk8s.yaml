@@ -50,7 +50,7 @@ data:
 
     print(f"Using Kafka broker: {KAFKA_BROKER}")
 
-    # Path to the YAML file containing ACL configuration
+    # Path to the YAML file containing the ACL configuration
     CONFIG_FILE = "/config/acl-config.yaml"
 
     if not os.path.isfile(CONFIG_FILE):
