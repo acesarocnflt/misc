@@ -10,7 +10,7 @@ kafka-acls:
   - action: "--add"
     allow-principal: "User:team2"
     operations:
-      - "READ"
+      - "WRITE"
       - "DESCRIBE"
     transactional-id: "team2-streams-app2"
     resource-pattern-type: "literal"
