@@ -13,19 +13,15 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
-            cp /scripts/acl-script.sh /tmp/acl-script.sh &&
-            chmod +x /tmp/acl-script.sh &&
-            cp /scripts/acl-config.yaml /tmp/acl-config.yaml &&
-            /tmp/acl-script.sh
+            chmod +x /tmp/scripts/acl-script.sh &&
+            /tmp/scripts/acl-script.sh
         volumeMounts:
         - name: script-volume
-          mountPath: /scripts
+          mountPath: /tmp/scripts
           readOnly: true  # Per sicurezza, i ConfigMap sono in sola lettura
         - name: config-volume
-          mountPath: /config
+          mountPath: /tmp/config
           readOnly: true
-        - name: tmp-volume
-          mountPath: /tmp
       volumes:
       - name: script-volume
         configMap:
@@ -33,8 +29,6 @@ spec:
       - name: config-volume
         configMap:
           name: kafka-acls-config  # Contiene acl-config.yaml
-      - name: tmp-volume
-        emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -45,7 +39,7 @@ data:
   acl-script.sh: |
     #!/bin/bash
     set -e
-    CONFIG_FILE="/tmp/acl-config.yaml"
+    CONFIG_FILE="/tmp/config/acl-config.yaml"
 
     get_yaml_value() {
         local key=$1
