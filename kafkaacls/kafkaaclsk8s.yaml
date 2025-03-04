@@ -13,22 +13,21 @@ spec:
         command: ["/bin/bash", "-c"]
         args:
           - |
-            chmod +x /scripts/acl-script.sh &&
+            cp /scripts/acl-script.sh /tmp/acl-script.sh &&
+            chmod +x /tmp/acl-script.sh &&
             /scripts/acl-script.sh
         volumeMounts:
         - name: script-volume
           mountPath: /scripts
-          readOnly: false 
         - name: config-volume
           mountPath: /config
-          readOnly: false
       volumes:
       - name: script-volume
         configMap:
-          name: kafka-acls-script  # Contiene lo script Bash
+          name: kafka-acls-script
       - name: config-volume
         configMap:
-          name: kafka-acls-config  # Contiene acl-config.yaml
+          name: kafka-acls-config
 ---
 apiVersion: v1
 kind: ConfigMap
