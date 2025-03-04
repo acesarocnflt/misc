@@ -18,10 +18,10 @@ spec:
         volumeMounts:
         - name: script-volume
           mountPath: /tmp/scripts
-          readOnly: true  # Per sicurezza, i ConfigMap sono in sola lettura
+          readOnly: false 
         - name: config-volume
           mountPath: /tmp/config
-          readOnly: true
+          readOnly: false
       volumes:
       - name: script-volume
         configMap:
