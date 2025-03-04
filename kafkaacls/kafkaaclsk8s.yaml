@@ -9,7 +9,7 @@ spec:
       restartPolicy: Never
       containers:
       - name: kafka-acls
-        image: confluentinc/cp-server:7.8.0
+        image: confluentinc/cp-kafka:latest
         command: ["/bin/bash", "-c"]
         args:
           - |
@@ -20,10 +20,14 @@ spec:
         volumeMounts:
         - name: script-volume
           mountPath: /scripts
+        - name: tmp-volume
+          mountPath: /tmp
       volumes:
       - name: script-volume
         configMap:
           name: kafka-acls-script
+      - name: tmp-volume
+        emptyDir: {}
 ---
 apiVersion: v1
 kind: ConfigMap
@@ -62,7 +66,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: kafka-acls-config
-  namespace: kafka
+  namespace: confluent
 data:
   acl-config.yaml: |
     kafka-acls:
