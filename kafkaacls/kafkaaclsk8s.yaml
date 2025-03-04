@@ -39,6 +39,7 @@ data:
     #!/bin/bash
     set -e
 
+    # Set KafkaBroker value if not set
     KAFKA_BROKER=${KAFKA_BROKER:-"kafka.confluent.svc.cluster.local:9092"}
     CONFIG_FILE="/config/acl-config.yaml"
 
