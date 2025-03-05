@@ -2,15 +2,32 @@ kafka-acls:
   - action: "--add"
     allow-principal: "User:team1"
     operations:
-      - "WRITE"
+      - "READ"
       - "DESCRIBE"
-    transactional-id: "team1-streams-app1"
+    topic: "mytopic"
+    resource-pattern-type: "literal"
+
+  - action: "--add"
+    allow-principal: "User:team1"
+    operations:
+      - "READ"
+      - "DESCRIBE"
+      - "WRITE"
+    topic: "mytopic1"
     resource-pattern-type: "prefixed"
 
   - action: "--add"
     allow-principal: "User:team2"
     operations:
-      - "WRITE"
+      - "READ"
       - "DESCRIBE"
-    transactional-id: "team2-streams-app2"
+    group: "mygroup"
     resource-pattern-type: "literal"
+
+  - action: "--add"
+    allow-principal: "User:team2"
+    operations:
+      - "READ"
+      - "DESCRIBE"
+    group: "mygroup1"
+    resource-pattern-type: "prefixed"
