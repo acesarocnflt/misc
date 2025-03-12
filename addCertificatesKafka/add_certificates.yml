@@ -1,0 +1,23 @@
+---
+- name: Add certificates to truststore
+  hosts: all
+  become: yes
+  tasks:
+    - name: Ensure keytool is installed
+      package:
+        name: openjdk-17-jdk
+        state: present
+
+    - name: Add certificates to truststore
+      command: >
+        keytool -import -trustcacerts -alias "{{ item.alias }}"
+        -file "{{ item.cert_path }}"
+        -keystore "{{ truststore_path }}"
+        -storepass "{{ truststore_password }}"
+        -noprompt
+      with_items: "{{ certs }}"
+      when: certs is defined
+
+    - name: Debug certs variable
+      debug:
+        var: certs
